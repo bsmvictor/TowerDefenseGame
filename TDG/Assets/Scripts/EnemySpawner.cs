@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.EventSystems; 
+using UnityEngine.EventSystems;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -35,7 +35,7 @@ public class EnemySpawner : MonoBehaviour
 
         timeSinceLastSpawn += Time.deltaTime;
 
-        if(timeSinceLastSpawn >= (1f / enemiesPerSecond) && enemeisLeftToSpawn > 0)
+        if (timeSinceLastSpawn >= (1f / enemiesPerSecond) && enemeisLeftToSpawn > 0)
         {
             SpawnEnemy();
             enemeisLeftToSpawn--;
@@ -43,7 +43,7 @@ public class EnemySpawner : MonoBehaviour
             timeSinceLastSpawn = 0f;
         }
 
-        if(enemiesAlive == 0 && enemeisLeftToSpawn == 0)
+        if (enemiesAlive == 0 && enemeisLeftToSpawn == 0)
         {
             EndWave();
         }
@@ -72,7 +72,8 @@ public class EnemySpawner : MonoBehaviour
 
     private void SpawnEnemy()
     {
-        GameObject prefrabToSpawn = enemyPrefab[0];
+        int index = Random.Range(0, enemyPrefab.Length);
+        GameObject prefrabToSpawn = enemyPrefab[index];
         Instantiate(prefrabToSpawn, LevelManager.main.startPoint.position, Quaternion.identity);
     }
 
