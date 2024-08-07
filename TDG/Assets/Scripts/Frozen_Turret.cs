@@ -22,7 +22,7 @@ public class Frozen_Turret : MonoBehaviour
 
         if (timeUntilFire >= 1f / aps)
         {
-            Debug.Log(timeUntilFire);
+            //Debug.Log(timeUntilFire);
             Freeze();
             timeUntilFire = 0f;
         }

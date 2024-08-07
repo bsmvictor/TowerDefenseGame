@@ -5,14 +5,14 @@ using UnityEngine;
 public class EnemyMovement : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField]  private Rigidbody2D rb;
+    [SerializeField] private Rigidbody2D rb;
 
     [Header("Atributes")]
     [SerializeField] private float MoveSpeed = 2f;
 
     private Transform target;
-    private int pathIndex = 0; 
-    
+    private int pathIndex = 0;
+
     private float baseSpeed;
 
     private void Start()
@@ -29,6 +29,7 @@ public class EnemyMovement : MonoBehaviour
 
             if (pathIndex == LevelManager.main.path.Length)
             {
+                LevelManager.main.DecreaseLife(1);
                 EnemySpawner.onEnemyDestroy.Invoke();
                 Destroy(gameObject);
                 return;

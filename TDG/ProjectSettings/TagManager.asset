@@ -44,3 +44,6 @@ TagManager:
   - name: Turrets
     uniqueID: 175916221
     locked: 0
+  - name: Shop
+    uniqueID: 262419103
+    locked: 0

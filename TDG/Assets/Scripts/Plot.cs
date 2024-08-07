@@ -27,13 +27,13 @@ public class Plot : MonoBehaviour
         sr.color = startColor;
     }
 
-    private void OnMouseDown()
+    private void OnMouseDown() //construct tower
     {
         if (tower != null) return;
 
         Tower towerToBuild = BuildManager.main.GetSelectedTower();
 
-        if(towerToBuild.cost > LevelManager.main.currency)
+        if (towerToBuild.cost > LevelManager.main.currency)
         {
             Debug.Log("Not enough currency to build that!");
             return;

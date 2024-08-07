@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class LevelManager : MonoBehaviour
     public Transform[] path;
 
     public int currency;
+    public int life;
 
     private void Awake()
     {
@@ -19,6 +21,7 @@ public class LevelManager : MonoBehaviour
     private void Start()
     {
         currency = 100;
+        life = 10;
     }
 
     public void IncreaseCurrency(int amount)
@@ -38,4 +41,25 @@ public class LevelManager : MonoBehaviour
             return false;
         }
     }
+
+    public void DecreaseLife(int amount)
+    {
+        life -= amount;
+        if (life <= 0)
+        {
+            // Game Over
+            Debug.Log("Game Over");
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+    }
+
+    public void OnDrawGizmos()
+    {
+        for (int i = 0; i < path.Length - 1; i++)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(path[i].position, path[i + 1].position);
+        }
+    }
+
 }
