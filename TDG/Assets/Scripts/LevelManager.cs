@@ -20,7 +20,7 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
-        currency = 100;
+        currency = 200;
         life = 10;
     }
 
@@ -50,15 +50,6 @@ public class LevelManager : MonoBehaviour
             // Game Over
             Debug.Log("Game Over");
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
-    }
-
-    public void OnDrawGizmos()
-    {
-        for (int i = 0; i < path.Length - 1; i++)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(path[i].position, path[i + 1].position);
         }
     }
 

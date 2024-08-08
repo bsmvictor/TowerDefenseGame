@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
+//Funcionamento da torre, atirar, seguir inimigos, etc
+
 public class Turret : MonoBehaviour
 {
     [Header("References")]
@@ -78,6 +80,11 @@ public class Turret : MonoBehaviour
         Quaternion targetRotation = Quaternion.Euler(new Vector3(0f, 0f, angle));
         turretRotationPoint.rotation = Quaternion.RotateTowards(turretRotationPoint.rotation, targetRotation,
         rotationSpeed * Time.deltaTime);
+    }
+
+    public void DestrotTurret()
+    {
+        Destroy(gameObject);
     }
 
     private void OnDrawGizmosSelected()
