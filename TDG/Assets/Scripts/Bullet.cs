@@ -9,13 +9,18 @@ public class Bullet : MonoBehaviour
 
     [Header("Attributes")]
     [SerializeField] private float bulletSpeed = 5f;
-    [SerializeField] private int damage = 1;  
-    
+    private Turret turret; // Reference to the Turret script
+
     public Transform target;
 
     public void SetTarget(Transform _target)
     {
         target = _target;
+    }
+
+    public void SetTurret(Turret _turret)
+    {
+        turret = _turret;
     }
 
     private void FixedUpdate()
@@ -28,7 +33,16 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        other.gameObject.GetComponent<Health>().TakeDamage(damage);
+        Health health = other.gameObject.GetComponent<Health>();
+        if (health != null)
+        {
+            health.TakeDamage(turret.damage); // Use the damage from the Turret script
+        }
+        Destroy(gameObject);
+    }
+
+    private void OnBecameInvisible()
+    {
         Destroy(gameObject);
     }
 }

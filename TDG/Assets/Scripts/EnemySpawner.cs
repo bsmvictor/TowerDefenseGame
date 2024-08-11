@@ -74,7 +74,7 @@ public class EnemySpawner : MonoBehaviour
     {
         int index = Random.Range(0, enemyPrefab.Length);
         GameObject prefrabToSpawn = enemyPrefab[index];
-        Instantiate(prefrabToSpawn, LevelManager.main.startPoint.position, Quaternion.identity);
+        Instantiate(prefrabToSpawn, GameManager.main.startPoint.position, Quaternion.identity);
     }
 
     private int EnemiesPerWave()

@@ -3,26 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-public class Frozen_Turret : MonoBehaviour
+public class FrozenTurret : Turret
 {
-    [Header("References")]
-    [SerializeField] private LayerMask enemyMask;
-
-    [Header("Atributes")]
-    [SerializeField] private float range = 1.5f;
-    [SerializeField] private float aps = 0.25f;
+    [Header("Frozen Turret Attributes")]
+    [SerializeField] private float aps = 0.25f; // Attacks per second (equivalente ao fireRate)
     [SerializeField] private float freezeTime = 1f;
 
-
-    private float timeUntilFire;
-
-    private void Update()
+    protected override void Update()
     {
         timeUntilFire += Time.deltaTime;
 
         if (timeUntilFire >= 1f / aps)
         {
-            //Debug.Log(timeUntilFire);
             Freeze();
             timeUntilFire = 0f;
         }
@@ -30,8 +22,7 @@ public class Frozen_Turret : MonoBehaviour
 
     private void Freeze()
     {
-        RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, range, (Vector2)
-        transform.position, 0f, enemyMask);
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, range, Vector2.zero, 0f, enemyMask);
 
         if (hits.Length > 0)
         {
@@ -40,9 +31,12 @@ public class Frozen_Turret : MonoBehaviour
                 RaycastHit2D hit = hits[i];
 
                 EnemyMovement em = hit.transform.GetComponent<EnemyMovement>();
-                em.UpdateSpeed(0.5f);
+                if (em != null)
+                {
+                    em.UpdateSpeed(0.5f); // Diminui a velocidade do inimigo
 
-                StartCoroutine(RestEnemySpeed(em));
+                    StartCoroutine(RestEnemySpeed(em)); // Restaura a velocidade do inimigo após o tempo de congelamento
+                }
             }
         }
     }
@@ -55,9 +49,7 @@ public class Frozen_Turret : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        Handles.color = Color.red;
+        Handles.color = Color.blue; // Alterado para azul para indicar a área de efeito da Frozen Turret
         Handles.DrawWireDisc(transform.position, transform.forward, range);
     }
-
 }
-

@@ -18,7 +18,7 @@ public class EnemyMovement : MonoBehaviour
     private void Start()
     {
         baseSpeed = MoveSpeed;
-        target = LevelManager.main.path[pathIndex];
+        target = GameManager.main.path[pathIndex];
     }
 
     private void Update()
@@ -27,16 +27,16 @@ public class EnemyMovement : MonoBehaviour
         {
             pathIndex++;
 
-            if (pathIndex == LevelManager.main.path.Length)
+            if (pathIndex == GameManager.main.path.Length)
             {
-                LevelManager.main.DecreaseLife(1);
+                GameManager.main.DecreaseLife(1);
                 EnemySpawner.onEnemyDestroy.Invoke();
                 Destroy(gameObject);
                 return;
             }
             else
             {
-                target = LevelManager.main.path[pathIndex];
+                target = GameManager.main.path[pathIndex];
             }
         }
     }
