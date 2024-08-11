@@ -17,9 +17,6 @@ public class GameManager : MonoBehaviour
     public Transform startPoint;
     public Transform[] path;
 
-    public int currency;
-    public int life;
-
     // Lista para armazenar as torres colocadas
     public List<Turret> placedTowers = new List<Turret>();
 
@@ -30,8 +27,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        currency = 300;
-        life = 10;
+        GameState.Instance.ResetCoins(300); // Inicializa as moedas com 300
+        GameState.Instance.ResetHealth(10); // Inicializa a vida com 10
     }
 
     private void Update()
@@ -77,15 +74,18 @@ public class GameManager : MonoBehaviour
 
     public void BuyTower(Turret tower)
     {
-        if (currency >= tower.cost)
+        if (GameState.Instance.SpendCoins(tower.cost))
         {
             customCursor.gameObject.SetActive(true);
             customCursor.GetComponent<SpriteRenderer>().sprite = tower.GetComponent<SpriteRenderer>().sprite;
             Cursor.visible = false;
 
-            currency -= tower.cost;
             TowerToPlace = tower;
             grid.SetActive(true);
+        }
+        else
+        {
+            Debug.Log("Not enough coins to buy the tower!");
         }
     }
 
@@ -93,7 +93,7 @@ public class GameManager : MonoBehaviour
     {
         if (tower != null && tile != null) // Verifique se a torre e o Tile não são null
         {
-            currency += tower.sellValue;
+            GameState.Instance.AddCoins(tower.sellValue); // Adiciona as moedas da venda
             tile.isOcupied = false;
             tile.tower = null; // Remove a referência da torre do Tile
             placedTowers.Remove(tower); // Remove a torre da lista de torres colocadas
@@ -101,32 +101,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void IncreaseCurrency(int amount)
-    {
-        currency += amount;
-    }
-
-    public bool SpendCurrency(int amount)
-    {
-        if (currency >= amount)
-        {
-            currency -= amount;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
     public void DecreaseLife(int amount)
     {
-        life -= amount;
-        if (life <= 0)
-        {
-            // Game Over
-            Debug.Log("Game Over");
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
+        GameState.Instance.DecreaseHealth(amount); // Diminui a vida no GameState
     }
 }

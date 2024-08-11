@@ -17,7 +17,7 @@ public class Health : MonoBehaviour
         if (hitPoints <= 0 && !isDestroyed)
         {
             EnemySpawner.onEnemyDestroy.Invoke();
-            GameManager.main.IncreaseCurrency(currencyWorth);
+            GameState.Instance.AddCoins(currencyWorth); // Adiciona moedas ao GameState
             isDestroyed = true;
             Destroy(gameObject);
         }
