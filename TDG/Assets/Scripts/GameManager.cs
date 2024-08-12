@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
 
     private Turret TowerToPlace;
     public GameObject grid;
+    public GameObject pauseMenu;
 
     public CustomCursor customCursor;
 
@@ -19,6 +20,8 @@ public class GameManager : MonoBehaviour
 
     // Lista para armazenar as torres colocadas
     public List<Turret> placedTowers = new List<Turret>();
+
+    private bool isPaused = false; // Variável para armazenar o estado de pausa
 
     private void Awake()
     {
@@ -33,6 +36,14 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        // Verifica se o jogador apertou a tecla de pausa (por exemplo, Escape)
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            TogglePause();
+        }
+
+        if (isPaused) return; // Se o jogo está pausado, não executa o restante do Update
+
         if (Input.GetMouseButtonDown(0) && TowerToPlace != null)
         {
             Tile nearestTile = null;
@@ -72,6 +83,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void TogglePause()
+    {
+        isPaused = !isPaused;
+        Time.timeScale = isPaused ? 0f : 1f; // Se pausado, para o tempo do jogo, caso contrário, continua
+
+        if(isPaused)
+            pauseMenu.gameObject.SetActive(true); // Ativa o menu de pausa
+        else
+            pauseMenu.gameObject.SetActive(false); // Desativa o menu de pausa
+    }
+
     public void BuyTower(Turret tower)
     {
         if (GameState.Instance.SpendCoins(tower.cost))
@@ -104,5 +126,11 @@ public class GameManager : MonoBehaviour
     public void DecreaseLife(int amount)
     {
         GameState.Instance.DecreaseHealth(amount); // Diminui a vida no GameState
+        if (GameState.Instance.PlayerHealth <= 0)
+        {
+            // Game Over
+            Debug.Log("Game Over");
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
     }
 }
