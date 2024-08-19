@@ -24,6 +24,14 @@ public class GameState : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            AddCoins(100);
+        }
+    }
+
     // Métodos para manipular as ondas
     public void IncrementWave()
     {
@@ -42,7 +50,7 @@ public class GameState : MonoBehaviour
         if (PlayerHealth <= 0)
         {
             PlayerHealth = 0;
-            Debug.Log("Game Over");
+            Debug.LogWarning("Game Over");
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
     }

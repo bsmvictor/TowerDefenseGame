@@ -5,15 +5,13 @@ using UnityEditor;
 
 public class FrozenTurret : Turret
 {
-    [Header("Frozen Turret Attributes")]
-    [SerializeField] private float aps = 0.25f; // Attacks per second (equivalente ao fireRate)
-    [SerializeField] private float freezeTime = 1f;
-
     protected override void Update()
     {
+        base.Update(); // Chama o Update da classe base Turret
+
         timeUntilFire += Time.deltaTime;
 
-        if (timeUntilFire >= 1f / aps)
+        if (timeUntilFire >= 1f / fireRate)
         {
             Freeze();
             timeUntilFire = 0f;
@@ -26,10 +24,8 @@ public class FrozenTurret : Turret
 
         if (hits.Length > 0)
         {
-            for (int i = 0; i < hits.Length; i++)
+            foreach (RaycastHit2D hit in hits)
             {
-                RaycastHit2D hit = hits[i];
-
                 EnemyMovement em = hit.transform.GetComponent<EnemyMovement>();
                 if (em != null)
                 {
@@ -43,13 +39,7 @@ public class FrozenTurret : Turret
 
     private IEnumerator RestEnemySpeed(EnemyMovement em)
     {
-        yield return new WaitForSeconds(freezeTime);
+        yield return new WaitForSeconds(fireRate);
         em.ResetSpeed();
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Handles.color = Color.blue; // Alterado para azul para indicar a área de efeito da Frozen Turret
-        Handles.DrawWireDisc(transform.position, transform.forward, range);
     }
 }

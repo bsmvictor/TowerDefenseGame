@@ -1,29 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField] TextMeshProUGUI currencyUI;
-    [SerializeField] Animator anim;
-
-    private bool isMenuOpen = true;
-
-    public void ToggleMenu()
+    public void NextScene()
     {
-        isMenuOpen = !isMenuOpen;
-        anim.SetBool("MenuOpen", isMenuOpen);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
-    private void OnGUI()
+    public void PreviousScene()
     {
-        //currencyUI.text = LevelManager.main.currency.ToString();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
     }
 
-    public void SetSelected()
+    public void MainMenu()
     {
+        SceneManager.LoadScene(0);
+    }
 
+    public void QuitGame()
+    {
+        //Editor da Unity
+        //UnityEditor.EditorApplication.isPlaying = false;
+
+        //Jogo Compilado
+        Application.Quit();
     }
 }

@@ -266,12 +266,17 @@ MonoBehaviour:
     m_Bits: 64
   bulletPrefab: {fileID: 2222481447933692724, guid: e88997520c49de84c8bb3a2866dece91, type: 3}
   firingPoint: {fileID: 2023765153622306626}
+  rangeIndicator: {fileID: 0}
   range: 0
   rotationSpeed: 200
   fireRate: 0
-  damage: 10
+  damage: 2
   cost: 300
   sellValue: 240
+  upgradeCost: 0
+  totalCost: 0
+  rangeUpgradeMultiplier: 0.5
+  speedUpgradeMultiplier: 0.5
   fireDelay: 2
   fireTimer: 0
 --- !u!1 &6149245416626125342
