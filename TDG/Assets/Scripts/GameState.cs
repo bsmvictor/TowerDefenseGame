@@ -10,9 +10,11 @@ public class GameState : MonoBehaviour
     public int PlayerHealth { get; private set; } = 100;
     public int PlayerCoins { get; private set; } = 50;
     public int TotalEnemiesDefeated { get; private set; } = 0;
+    public float GameSpeed = 1f;
 
     private void Awake()
     {
+
         if (Instance == null)
         {
             Instance = this;
@@ -26,9 +28,31 @@ public class GameState : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
+        //Cheat do money
+        if (Input.GetKeyDown(KeyCode.W))
         {
             AddCoins(100);
+        }
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            SpendCoins(100);
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            GameSpeed += 0.5f;
+            Time.timeScale = GameSpeed;
+
+            if(PlayerHealth <= 0) GameSpeed = 1f;
+        }
+
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            GameSpeed -= 0.5f;
+            Time.timeScale = GameSpeed;
+
+            if (PlayerHealth <= 0) GameSpeed = 1f;
         }
     }
 

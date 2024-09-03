@@ -50,6 +50,7 @@ public class GameManager : MonoBehaviour
     {
         // Define o singleton
         main = this;
+
     }
 
     private void Start()
@@ -57,6 +58,7 @@ public class GameManager : MonoBehaviour
         // Inicializa o estado do jogo com moedas e vida
         GameState.Instance.ResetCoins(300);
         GameState.Instance.ResetHealth(10);
+        GameState.Instance.GameSpeed = 1f; // Define a velocidade do jogo para 1x
 
         sellTowerButton.onClick.AddListener(() => SellSelectedTower());
         upgradeRangeButton.onClick.AddListener(() => UpgradeSelectedTowerRange());
