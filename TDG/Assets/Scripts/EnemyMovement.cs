@@ -62,6 +62,12 @@ public class EnemyMovement : MonoBehaviour
 
     private void OnDestroy()
     {
+        // Certifica que o evento seja chamado apenas uma vez quando o inimigo for destruído
+        if (EnemySpawner.onEnemyDestroy != null)
+        {
+            EnemySpawner.onEnemyDestroy.Invoke();
+        }
+        
         // Verifica o ID do inimigo quando ele é destruído
         if (enemyID == 1)
         {

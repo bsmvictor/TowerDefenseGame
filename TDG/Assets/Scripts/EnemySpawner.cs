@@ -115,8 +115,10 @@ public class EnemySpawner : MonoBehaviour
     {
         isSpawning = true; // Marca que a onda está em andamento
         enemiesLeftToSpawn = CalculateEnemiesForCurrentWave(); // Calcula quantos inimigos spawnar nesta onda
+        enemiesAlive = enemiesLeftToSpawn; // Atualiza a contagem de inimigos vivos com base nos que ainda faltam spawnar
         timeSinceLastSpawn = 0f; // Reseta o tempo desde o último spawn
     }
+
 
     private void EndWave()
     {
@@ -171,8 +173,16 @@ public class EnemySpawner : MonoBehaviour
 
     private void EnemyDestroyed()
     {
-        enemiesAlive--; // Decrementa a contagem de inimigos vivos quando um inimigo é destruído
+        if (enemiesAlive > 0)
+        {
+            enemiesAlive--; // Decrementa a contagem de inimigos vivos quando um inimigo é destruído
+        }
+        else
+        {
+            Debug.LogWarning("Número de inimigos vivos já é zero ou negativo! Isso não deveria acontecer.");
+        }
     }
+
 
     private void InitializeWaveData()
     {
