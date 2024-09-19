@@ -7,14 +7,13 @@ public class GameState : MonoBehaviour
 
     public int CurrentWave { get; private set; } = 1;
     public int TotalScore { get; private set; } = 0;
-    public int PlayerHealth { get; private set; } = 100;
-    public int PlayerCoins { get; private set; } = 50;
+    public int PlayerHealth { get; private set; } = 10;
+    public int PlayerCoins { get; private set; } = 300;
     public int TotalEnemiesDefeated { get; private set; } = 0;
-    public float GameSpeed = 1f;
+    public float gameSpeed = 1f;
 
     private void Awake()
     {
-
         if (Instance == null)
         {
             Instance = this;
@@ -41,22 +40,32 @@ public class GameState : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.D))
         {
-            GameSpeed += 0.5f;
-            Time.timeScale = GameSpeed;
+            gameSpeed += 0.5f;
+            Time.timeScale = gameSpeed;
 
-            if(PlayerHealth <= 0) GameSpeed = 1f;
+            if (PlayerHealth <= 0) gameSpeed = 1f;
         }
 
         if (Input.GetKeyDown(KeyCode.A))
         {
-            GameSpeed -= 0.5f;
-            Time.timeScale = GameSpeed;
+            gameSpeed -= 0.5f;
+            Time.timeScale = gameSpeed;
 
-            if (PlayerHealth <= 0) GameSpeed = 1f;
+            if (PlayerHealth <= 0) gameSpeed = 1f;
         }
     }
 
-    // Métodos para manipular as ondas
+    // MÃ©todo para reiniciar todo o estado do jogo
+    public void ResetGameState()
+    {
+        ResetWave();
+        ResetHealth(10);  // Reinicia a saÃºde para 100 ou o valor que vocÃª preferir
+        ResetCoins(300);    // Reinicia as moedas para 50 ou o valor inicial que vocÃª preferir
+        ResetEnemiesDefeated();
+        gameSpeed = 1f;    // Reinicia a velocidade do jogo para o padrÃ£o
+    }
+
+    // MÃ©todos para manipular as ondas
     public void IncrementWave()
     {
         CurrentWave++;
@@ -67,7 +76,7 @@ public class GameState : MonoBehaviour
         CurrentWave = 1;
     }
 
-    // Métodos para manipular a saúde do jogador
+    // MÃ©todos para manipular a saÃºde do jogador
     public void DecreaseHealth(int amount)
     {
         PlayerHealth -= amount;
@@ -75,7 +84,9 @@ public class GameState : MonoBehaviour
         {
             PlayerHealth = 0;
             Debug.LogWarning("Game Over");
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            // Reinicia o estado do jogo antes de carregar a cena
+            ResetGameState();
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Reinicia a cena atual
         }
     }
 
@@ -89,7 +100,7 @@ public class GameState : MonoBehaviour
         PlayerHealth = health;
     }
 
-    // Métodos para manipular as moedas do jogador
+    // MÃ©todos para manipular as moedas do jogador
     public void AddCoins(int amount)
     {
         PlayerCoins += amount;
@@ -113,7 +124,7 @@ public class GameState : MonoBehaviour
         PlayerCoins = coins;
     }
 
-    // Métodos para manipular o número total de inimigos derrotados
+    // MÃ©todos para manipular o nÃºmero total de inimigos derrotados
     public void IncrementEnemiesDefeated()
     {
         TotalEnemiesDefeated++;

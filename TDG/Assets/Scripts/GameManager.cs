@@ -56,15 +56,14 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        // Inicializa o estado do jogo com moedas e vida
-        GameState.Instance.ResetCoins(300);
-        GameState.Instance.ResetHealth(10);
-        GameState.Instance.GameSpeed = 1f; // Define a velocidade do jogo para 1x
+        // Reinicializa o estado do jogo com moedas, vida e ondas
+        GameState.Instance.ResetGameState();  // Garante que o estado esteja resetado ao começar
 
         sellTowerButton.onClick.AddListener(() => SellSelectedTower());
         upgradeRangeButton.onClick.AddListener(() => UpgradeSelectedTowerRange());
         upgradeSpeedButton.onClick.AddListener(() => UpgradeSelectedTowerSpeed());
     }
+
 
 
     private void Update()
@@ -325,32 +324,47 @@ public class GameManager : MonoBehaviour
 
     private void UpdateButtonColors()
     {
-        if (selectedTile != null && selectedTile.isOcupied)
+// Verificação de nulidade para o botão de venda da torre
+        if (sellTowerButton != null && sellTowerButton.image != null)
         {
-            sellTowerButton.image.color = sellTowerButtonActiveColor;
-        }
-        else
-        {
-            sellTowerButton.image.color = sellTowerButtonInactiveColor;
-        }
-
-        if (selectedTile != null && selectedTile.isOcupied)
-        {
-            upgradeRangeButton.image.color = upgradeRangeButtonActiveColor;
-        }
-        else
-        {
-            upgradeRangeButton.image.color = upgradeRangeButtonInactiveColor;
+            if (selectedTile != null && selectedTile.isOcupied)
+            {
+                sellTowerButton.image.color = sellTowerButtonActiveColor;
+            }
+            else
+            {
+                sellTowerButton.image.color = sellTowerButtonInactiveColor;
+            }
         }
 
-        if (selectedTile != null && selectedTile.isOcupied)
+
+// Verificação de nulidade para o botão de upgrade de alcance
+        if (upgradeRangeButton != null && upgradeRangeButton.image != null)
         {
-            upgradeSpeedButton.image.color = upgradeSpeedButtonActiveColor;
+            if (selectedTile != null && selectedTile.isOcupied)
+            {
+                upgradeRangeButton.image.color = upgradeRangeButtonActiveColor;
+            }
+            else
+            {
+                upgradeRangeButton.image.color = upgradeRangeButtonInactiveColor;
+            }
         }
-        else
+
+
+// Verificação de nulidade para o botão de upgrade de velocidade
+        if (upgradeSpeedButton != null && upgradeSpeedButton.image != null)
         {
-            upgradeSpeedButton.image.color = upgradeSpeedButtonInactiveColor;
+            if (selectedTile != null && selectedTile.isOcupied)
+            {
+                upgradeSpeedButton.image.color = upgradeSpeedButtonActiveColor;
+            }
+            else
+            {
+                upgradeSpeedButton.image.color = upgradeSpeedButtonInactiveColor;
+            }
         }
+
     }
 
 }
