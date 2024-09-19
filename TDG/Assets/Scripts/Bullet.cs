@@ -9,7 +9,7 @@ public class Bullet : MonoBehaviour
 
     [Header("Attributes")]
     [SerializeField] private float bulletSpeed = 5f;
-    private Turret turret; // Reference to the Turret script
+    private Turret turret; // Referência para o script da Torre
 
     public Transform target;
 
@@ -23,26 +23,42 @@ public class Bullet : MonoBehaviour
         turret = _turret;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
-        if (!target) return;
+        // Se o alvo for destruído ou não existir, destrói a bala
+        if (!target)
+        {
+            Destroy(gameObject);
+            return;
+        }
 
+        // Move a bala diretamente em direção ao alvo, sem usar física
         Vector2 direction = (target.position - transform.position).normalized;
-        rb.velocity = direction * bulletSpeed;
+        float distanceThisFrame = bulletSpeed * Time.deltaTime;
+
+        // Verifica se a bala atingiu o alvo
+        if (Vector2.Distance(transform.position, target.position) <= distanceThisFrame)
+        {
+            HitTarget();
+            return;
+        }
+
+        // Move a bala
+        transform.Translate(direction * distanceThisFrame, Space.World);
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
+    private void HitTarget()
     {
-        Health health = other.gameObject.GetComponent<Health>();
+        Health health = target.GetComponent<Health>();
         if (health != null)
         {
-            health.TakeDamage(turret.damage); // Use the damage from the Turret script
+            health.TakeDamage(turret.damage); // Usa o dano da torre
         }
-        Destroy(gameObject);
+        Destroy(gameObject); // Destrói a bala após atingir o alvo
     }
 
     private void OnBecameInvisible()
     {
-        Destroy(gameObject);
+        Destroy(gameObject); // Destrói a bala se ela sair da tela
     }
 }

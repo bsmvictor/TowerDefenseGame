@@ -7,7 +7,7 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager main; // Instância singleton do GameManager
+    public static GameManager main; // Instï¿½ncia singleton do GameManager
 
     [Header("Game Objects")]
     [SerializeField] private GameObject grid; // Grade onde as torres podem ser colocadas
@@ -16,27 +16,27 @@ public class GameManager : MonoBehaviour
     [Header("Buttons and Colors")]
     [SerializeField] private Button sellTowerButton;
     [SerializeField] private TMP_Text sellTowerButtonText; // Texto para exibir o valor de venda
-    [SerializeField] private Color sellTowerButtonInactiveColor; // Cor quando nenhuma torre está selecionada
-    [SerializeField] private Color sellTowerButtonActiveColor;  // Cor quando uma torre está selecionada
+    [SerializeField] private Color sellTowerButtonInactiveColor; // Cor quando nenhuma torre estï¿½ selecionada
+    [SerializeField] private Color sellTowerButtonActiveColor;  // Cor quando uma torre estï¿½ selecionada
     [Space(10)]
 
-    [SerializeField] private Button upgradeRangeButton; // Botão de upgrade de alcance
+    [SerializeField] private Button upgradeRangeButton; // Botï¿½o de upgrade de alcance
     [SerializeField] private TMP_Text upgradeRangeButtonText; // Texto para exibir o custo do upgrade de alcance
-    [SerializeField] private Color upgradeRangeButtonInactiveColor; // Cor quando nenhuma torre está selecionada
-    [SerializeField] private Color upgradeRangeButtonActiveColor;  // Cor quando uma torre está selecionada
+    [SerializeField] private Color upgradeRangeButtonInactiveColor; // Cor quando nenhuma torre estï¿½ selecionada
+    [SerializeField] private Color upgradeRangeButtonActiveColor;  // Cor quando uma torre estï¿½ selecionada
     [Space(10)]
 
-    [SerializeField] private Button upgradeSpeedButton; // Botão de upgrade de velocidade
+    [SerializeField] private Button upgradeSpeedButton; // Botï¿½o de upgrade de velocidade
     [SerializeField] private TMP_Text upgradeSpeedButtonText; // Texto para exibir o custo do upgrade de velocidade
-    [SerializeField] private Color upgradeSpeedButtonInactiveColor; // Cor quando nenhuma torre está selecionada
-    [SerializeField] private Color upgradeSpeedButtonActiveColor;  // Cor quando uma torre está selecionada
+    [SerializeField] private Color upgradeSpeedButtonInactiveColor; // Cor quando nenhuma torre estï¿½ selecionada
+    [SerializeField] private Color upgradeSpeedButtonActiveColor;  // Cor quando uma torre estï¿½ selecionada
 
     [Header("Cursor and Towers")]
-    [SerializeField] private CustomCursor customCursor; // Cursor customizado usado para mostrar onde a torre será colocada
-    [SerializeField] private Turret TowerToPlace; // Referência à torre que está prestes a ser colocada
+    [SerializeField] private CustomCursor customCursor; // Cursor customizado usado para mostrar onde a torre serï¿½ colocada
+    [SerializeField] private Turret TowerToPlace; // Referï¿½ncia ï¿½ torre que estï¿½ prestes a ser colocada
 
     [Header("Tiles and Path")]
-    private Tile selectedTile; // Adicione isso fora de qualquer método
+    private Tile selectedTile; // Adicione isso fora de qualquer mï¿½todo
     public Tile[] tiles; // Array de tiles onde as torres podem ser colocadas
     public Transform startPoint; // Ponto inicial para os inimigos
     public Transform[] path; // Caminho que os inimigos seguem
@@ -70,17 +70,17 @@ public class GameManager : MonoBehaviour
     {
         HandlePauseInput();
 
-        if (isPaused) return; // Se o jogo está pausado, não executa o restante do Update
+        if (isPaused) return; // Se o jogo estï¿½ pausado, nï¿½o executa o restante do Update
 
         HandleTowerPlacement();
         HandleTowerSelling();
         HandleTowerCancellation(); // Verifica se o jogador quer cancelar a compra da torre
-        UpdateButtonColors(); // Atualiza a cor dos botões
-        UpdateButtonValues(); // Atualiza os textos dos botões
+        UpdateButtonColors(); // Atualiza a cor dos botï¿½es
+        UpdateButtonValues(); // Atualiza os textos dos botï¿½es
     }
 
-    // Atualiza os textos dos botões com os valores da torre selecionada
-    // Atualiza os textos dos botões com os valores da torre selecionada
+    // Atualiza os textos dos botï¿½es com os valores da torre selecionada
+    // Atualiza os textos dos botï¿½es com os valores da torre selecionada
     private void UpdateButtonValues()
     {
         if (selectedTile != null && selectedTile.isOcupied)
@@ -91,23 +91,23 @@ public class GameManager : MonoBehaviour
             if (selectedTurret.rangeUpgradeLevel < 3)
             {
                 upgradeRangeButtonText.text = $"Upgrade Range: ${selectedTurret.CurrentRangeUpgradeCost}";
-                upgradeRangeButton.interactable = true; // Habilita o botão se ainda for possível fazer upgrade
+                upgradeRangeButton.interactable = true; // Habilita o botï¿½o se ainda for possï¿½vel fazer upgrade
             }
             else
             {
                 upgradeRangeButtonText.text = "Max Range Upgrade";
-                upgradeRangeButton.interactable = false; // Desabilita o botão se o limite de upgrade foi atingido
+                upgradeRangeButton.interactable = false; // Desabilita o botï¿½o se o limite de upgrade foi atingido
             }
 
             if (selectedTurret.speedUpgradeLevel < 3)
             {
                 upgradeSpeedButtonText.text = $"Upgrade Speed: ${selectedTurret.CurrentSpeedUpgradeCost}";
-                upgradeSpeedButton.interactable = true; // Habilita o botão se ainda for possível fazer upgrade
+                upgradeSpeedButton.interactable = true; // Habilita o botï¿½o se ainda for possï¿½vel fazer upgrade
             }
             else
             {
                 upgradeSpeedButtonText.text = "Max Speed Upgrade";
-                upgradeSpeedButton.interactable = false; // Desabilita o botão se o limite de upgrade foi atingido
+                upgradeSpeedButton.interactable = false; // Desabilita o botï¿½o se o limite de upgrade foi atingido
             }
         }
         else
@@ -115,13 +115,13 @@ public class GameManager : MonoBehaviour
             sellTowerButtonText.text = "Sell";
             upgradeRangeButtonText.text = "Upgrade Range";
             upgradeSpeedButtonText.text = "Upgrade Speed";
-            upgradeRangeButton.interactable = false; // Desabilita o botão quando nenhuma torre está selecionada
-            upgradeSpeedButton.interactable = false; // Desabilita o botão quando nenhuma torre está selecionada
+            upgradeRangeButton.interactable = false; // Desabilita o botï¿½o quando nenhuma torre estï¿½ selecionada
+            upgradeSpeedButton.interactable = false; // Desabilita o botï¿½o quando nenhuma torre estï¿½ selecionada
         }
     }
 
 
-    // Lida com a entrada do usuário para pausar/despausar o jogo.
+    // Lida com a entrada do usuï¿½rio para pausar/despausar o jogo.
     private void HandlePauseInput()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -140,7 +140,7 @@ public class GameManager : MonoBehaviour
         pauseMenu.SetActive(isPaused);
     }
 
-    // Lida com a colocação de uma torre no tile mais próximo ao clique do jogador.
+    // Lida com a colocaï¿½ï¿½o de uma torre no tile mais prï¿½ximo ao clique do jogador.
     private void HandleTowerPlacement()
     {
         if (Input.GetMouseButtonDown(0) && TowerToPlace != null)
@@ -206,12 +206,12 @@ public class GameManager : MonoBehaviour
     {
         TowerToPlace = null; // Reseta a torre a ser colocada
         customCursor.gameObject.SetActive(false); // Esconde o cursor customizado
-        Cursor.visible = true; // Torna o cursor padrão visível novamente
+        Cursor.visible = true; // Torna o cursor padrï¿½o visï¿½vel novamente
         Debug.Log("Tower placement canceled.");
     }
 
 
-    // Encontra o tile mais próximo da posição do mouse.
+    // Encontra o tile mais prï¿½ximo da posiï¿½ï¿½o do mouse.
     private Tile FindNearestTile()
     {
         Tile nearestTile = null;
@@ -238,19 +238,19 @@ public class GameManager : MonoBehaviour
             Turret newTower = Instantiate(TowerToPlace, tile.transform.position, Quaternion.identity);
             tile.tower = newTower; // Vincula a torre ao Tile
             tile.isOcupied = true; // Marca o tile como ocupado
-            placedTowers.Add(newTower); // Adiciona a nova torre à lista de torres colocadas
+            placedTowers.Add(newTower); // Adiciona a nova torre ï¿½ lista de torres colocadas
 
-            // Desativa o gizmo da torre após colocá-la
+            // Desativa o gizmo da torre apï¿½s colocï¿½-la
             newTower.SetGizmoVisibility(false);
 
             TowerToPlace = null; // Reseta a torre a ser colocada
             customCursor.gameObject.SetActive(false); // Esconde o cursor customizado
-            Cursor.visible = true; // Torna o cursor padrão visível novamente
+            Cursor.visible = true; // Torna o cursor padrï¿½o visï¿½vel novamente
         }
         else
         {
             Debug.Log("Not enough coins to place the tower!");
-            // Reseta o cursor se não houver moedas suficientes
+            // Reseta o cursor se nï¿½o houver moedas suficientes
             customCursor.gameObject.SetActive(false);
             Cursor.visible = true;
             TowerToPlace = null;
@@ -263,7 +263,7 @@ public class GameManager : MonoBehaviour
         if (selectedTile != null && selectedTile.isOcupied)
         {
             SellTower(selectedTile, selectedTile.tower);
-            selectedTile = null; // Reseta o tile selecionado após a venda
+            selectedTile = null; // Reseta o tile selecionado apï¿½s a venda
         }
         else
         {
@@ -278,9 +278,9 @@ public class GameManager : MonoBehaviour
         {
             GameState.Instance.AddCoins(tower.sellValue); // Adiciona as moedas da venda
             tile.isOcupied = false;
-            tile.tower = null; // Remove a referência da torre do Tile
+            tile.tower = null; // Remove a referï¿½ncia da torre do Tile
             placedTowers.Remove(tower); // Remove a torre da lista de torres colocadas
-            Destroy(tower.gameObject); // Destrói a torre
+            Destroy(tower.gameObject); // Destrï¿½i a torre
         }
     }
 
@@ -291,7 +291,7 @@ public class GameManager : MonoBehaviour
         customCursor.GetComponent<SpriteRenderer>().sprite = tower.GetComponent<SpriteRenderer>().sprite;
         Cursor.visible = false;
         TowerToPlace = tower;
-        grid.SetActive(true); // Mostra a grade de colocação
+        grid.SetActive(true); // Mostra a grade de colocaï¿½ï¿½o
     }
 
 
@@ -300,7 +300,7 @@ public class GameManager : MonoBehaviour
     {
         if (selectedTile != null && selectedTile.isOcupied)
         {
-            selectedTile.tower.UpgradeRange(); // Chame um método na classe Turret para aumentar o alcance
+            selectedTile.tower.UpgradeRange(); // Chame um mï¿½todo na classe Turret para aumentar o alcance
             Debug.Log("Tower range upgraded.");
         }
         else
@@ -313,7 +313,7 @@ public class GameManager : MonoBehaviour
     {
         if (selectedTile != null && selectedTile.isOcupied)
         {
-            selectedTile.tower.UpgradeSpeed(); // Chame um método na classe Turret para aumentar a velocidade
+            selectedTile.tower.UpgradeSpeed(); // Chame um mï¿½todo na classe Turret para aumentar a velocidade
             Debug.Log("Tower speed upgraded.");
         }
         else

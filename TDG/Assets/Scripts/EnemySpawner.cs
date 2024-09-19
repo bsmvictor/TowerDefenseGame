@@ -18,25 +18,42 @@ public class WaveData
 
 public class EnemySpawner : MonoBehaviour
 {
+    // Singleton Instance
+    public static EnemySpawner Instance { get; private set; }
+
     [Header("References")]
-    [SerializeField] private GameObject[] enemyPrefabs; // Prefabs dos inimigos
+    [SerializeField] public GameObject[] enemyPrefabs; // Prefabs dos inimigos
 
     [Header("Attributes")]
     [SerializeField] private float timeBetweenWaves; // Tempo de espera entre as ondas
 
     [Header("Events")]
-    public static UnityEvent onEnemyDestroy = new UnityEvent(); // Evento chamado quando um inimigo é destruído
+    public static UnityEvent onEnemyDestroy = new UnityEvent(); // Evento chamado quando um inimigo Ã© destruÃ­do
 
-    private float timeSinceLastSpawn; // Tempo desde o último spawn de inimigo
+    private float timeSinceLastSpawn; // Tempo desde o Ãºltimo spawn de inimigo
     private int enemiesAlive; // Contagem de inimigos vivos
     private int enemiesLeftToSpawn; // Contagem de inimigos restantes para spawnar na onda atual
-    private bool isSpawning = false; // Indica se a onda está em andamento
+    private bool isSpawning = false; // Indica se a onda estÃ¡ em andamento
 
-    private Dictionary<int, WaveData> waveData; // Dados de configuração das waves
+    private Dictionary<int, WaveData> waveData; // Dados de configuraÃ§Ã£o das waves
 
     private void Awake()
     {
-        onEnemyDestroy.AddListener(EnemyDestroyed); // Inscreve o método EnemyDestroyed ao evento onEnemyDestroy
+        // ImplementaÃ§Ã£o do Singleton
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject); // Garante que nÃ£o haja mais de uma instÃ¢ncia do singleton
+            return;
+        }
+
+        // Garante que o singleton persista entre as cenas, se necessÃ¡rio
+        DontDestroyOnLoad(gameObject);
+
+        onEnemyDestroy.AddListener(EnemyDestroyed); // Inscreve o mÃ©todo EnemyDestroyed ao evento onEnemyDestroy
         InitializeWaveData(); // Inicializa manualmente as waves
     }
 
@@ -57,22 +74,22 @@ public class EnemySpawner : MonoBehaviour
 
     private void HandleSpawning()
     {
-        timeSinceLastSpawn += Time.deltaTime; // Incrementa o tempo desde o último spawn
+        timeSinceLastSpawn += Time.deltaTime; // Incrementa o tempo desde o Ãºltimo spawn
 
         if (ShouldSpawnNextEnemy())
         {
-            SpawnEnemy(); // Spawna o próximo inimigo se as condições forem atendidas
+            SpawnEnemy(); // Spawna o prÃ³ximo inimigo se as condiÃ§Ãµes forem atendidas
         }
 
         if (WaveComplete())
         {
-            EndWave(); // Finaliza a onda se todos os inimigos tiverem sido spawados e destruídos
+            EndWave(); // Finaliza a onda se todos os inimigos tiverem sido spawados e destruÃ­dos
         }
     }
 
     private bool ShouldSpawnNextEnemy()
     {
-        // Verifica se é hora de spawnar o próximo inimigo com base no intervalo específico da onda
+        // Verifica se Ã© hora de spawnar o prÃ³ximo inimigo com base no intervalo especÃ­fico da onda
         int currentWave = GameState.Instance.CurrentWave;
         float spawnInterval = waveData[currentWave].SpawnInterval;
         return timeSinceLastSpawn >= spawnInterval && enemiesLeftToSpawn > 0;
@@ -85,7 +102,7 @@ public class EnemySpawner : MonoBehaviour
         Instantiate(prefabToSpawn, GameManager.main.startPoint.position, Quaternion.identity); // Spawna o inimigo
         enemiesLeftToSpawn--; // Decrementa a contagem de inimigos restantes para spawnar
         enemiesAlive++; // Incrementa a contagem de inimigos vivos
-        timeSinceLastSpawn = 0f; // Reseta o tempo desde o último spawn
+        timeSinceLastSpawn = 0f; // Reseta o tempo desde o Ãºltimo spawn
     }
 
     private IEnumerator StartWave()
@@ -96,21 +113,21 @@ public class EnemySpawner : MonoBehaviour
 
     private void BeginWave()
     {
-        isSpawning = true; // Marca que a onda está em andamento
+        isSpawning = true; // Marca que a onda estÃ¡ em andamento
         enemiesLeftToSpawn = CalculateEnemiesForCurrentWave(); // Calcula quantos inimigos spawnar nesta onda
-        timeSinceLastSpawn = 0f; // Reseta o tempo desde o último spawn
+        timeSinceLastSpawn = 0f; // Reseta o tempo desde o Ãºltimo spawn
     }
 
     private void EndWave()
     {
         isSpawning = false; // Marca que a onda terminou
-        GameState.Instance.IncrementWave(); // Avança para a próxima onda
-        StartCoroutine(StartWave()); // Inicia o ciclo da próxima onda
+        GameState.Instance.IncrementWave(); // AvanÃ§a para a prÃ³xima onda
+        StartCoroutine(StartWave()); // Inicia o ciclo da prÃ³xima onda
     }
 
     private int CalculateEnemiesForCurrentWave()
     {
-        // Calcula o número total de inimigos para a onda atual
+        // Calcula o nÃºmero total de inimigos para a onda atual
         int currentWave = GameState.Instance.CurrentWave;
         if (waveData.ContainsKey(currentWave))
         {
@@ -123,7 +140,7 @@ public class EnemySpawner : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Wave não encontrada! Nenhum inimigo será gerado.");
+            Debug.LogWarning("Wave nÃ£o encontrada! Nenhum inimigo serÃ¡ gerado.");
             return 0;
         }
     }
@@ -139,22 +156,22 @@ public class EnemySpawner : MonoBehaviour
             if (enemiesForWave[i] > 0)
             {
                 enemiesForWave[i]--; // Decrementa a contagem do tipo selecionado
-                return i; // Retorna o índice do tipo de inimigo
+                return i; // Retorna o Ã­ndice do tipo de inimigo
             }
         }
 
-        return 0; // Retorna o tipo padrão se nenhum for encontrado
+        return 0; // Retorna o tipo padrÃ£o se nenhum for encontrado
     }
 
     private bool WaveComplete()
     {
-        // Verifica se a onda está completa (todos os inimigos foram spawnados e destruídos)
+        // Verifica se a onda estÃ¡ completa (todos os inimigos foram spawnados e destruÃ­dos)
         return enemiesAlive == 0 && enemiesLeftToSpawn == 0;
     }
 
     private void EnemyDestroyed()
     {
-        enemiesAlive--; // Decrementa a contagem de inimigos vivos quando um inimigo é destruído
+        enemiesAlive--; // Decrementa a contagem de inimigos vivos quando um inimigo Ã© destruÃ­do
     }
 
     private void InitializeWaveData()

@@ -7,8 +7,9 @@ public class EnemyMovement : MonoBehaviour
     [Header("References")]
     [SerializeField] private Rigidbody2D rb;
 
-    [Header("Atributes")]
+    [Header("Attributes")]
     [SerializeField] private float MoveSpeed = 2f;
+    [SerializeField] private int enemyID;  // ID do inimigo
 
     private Transform target;
     private int pathIndex = 0;
@@ -55,5 +56,21 @@ public class EnemyMovement : MonoBehaviour
     public void ResetSpeed()
     {
         MoveSpeed = baseSpeed;
+    }
+
+    private void OnDestroy()
+    {
+        // Verifica o ID do inimigo quando ele é destruído
+        if (enemyID == 1)
+        {
+            // Instancia um inimigo do tipo 0 (usando o primeiro prefab de inimigo)
+          Instantiate(EnemySpawner.Instance.enemyPrefabs[0], transform.position, Quaternion.identity);
+        }
+    }
+
+    // Método para definir o ID do inimigo
+    public void SetEnemyID(int id)
+    {
+        enemyID = id;
     }
 }
