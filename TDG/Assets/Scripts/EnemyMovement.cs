@@ -1,14 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class EnemyMovement : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Rigidbody2D rb;
 
+    [FormerlySerializedAs("MoveSpeed")]
     [Header("Attributes")]
-    [SerializeField] private float MoveSpeed = 2f;
+    [SerializeField] private float moveSpeed = 2f;
     [SerializeField] private int enemyID;  // ID do inimigo
 
     private Transform target;
@@ -18,8 +20,8 @@ public class EnemyMovement : MonoBehaviour
 
     private void Start()
     {
-        baseSpeed = MoveSpeed;
-        target = GameManager.main.path[pathIndex];
+        baseSpeed = moveSpeed;
+        target = GameManager.main.path[pathIndex]; // Começa a seguir o caminho a partir do índice atual
     }
 
     private void Update()
@@ -45,17 +47,17 @@ public class EnemyMovement : MonoBehaviour
     private void FixedUpdate()
     {
         Vector2 direction = (target.position - transform.position).normalized;
-        rb.velocity = direction * MoveSpeed;
+        rb.velocity = direction * moveSpeed;
     }
 
     public void UpdateSpeed(float newSpeed)
     {
-        MoveSpeed = newSpeed;
+        moveSpeed = newSpeed;
     }
 
     public void ResetSpeed()
     {
-        MoveSpeed = baseSpeed;
+        moveSpeed = baseSpeed;
     }
 
     private void OnDestroy()
@@ -63,8 +65,9 @@ public class EnemyMovement : MonoBehaviour
         // Verifica o ID do inimigo quando ele é destruído
         if (enemyID == 1)
         {
-            // Instancia um inimigo do tipo 0 (usando o primeiro prefab de inimigo)
-          Instantiate(EnemySpawner.Instance.enemyPrefabs[0], transform.position, Quaternion.identity);
+            // Instancia um inimigo do tipo 0 e define o caminho a partir do ponto atual
+            GameObject newEnemy = Instantiate(EnemySpawner.Instance.enemyPrefabs[0], transform.position, Quaternion.identity);
+            newEnemy.GetComponent<EnemyMovement>().SetPathIndex(pathIndex); // Passa o índice do caminho atual para o novo inimigo
         }
     }
 
@@ -72,5 +75,12 @@ public class EnemyMovement : MonoBehaviour
     public void SetEnemyID(int id)
     {
         enemyID = id;
+    }
+
+    // Método para definir o índice do caminho
+    public void SetPathIndex(int index)
+    {
+        pathIndex = index;
+        target = GameManager.main.path[pathIndex]; // Atualiza o alvo do novo inimigo
     }
 }

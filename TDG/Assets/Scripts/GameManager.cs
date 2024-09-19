@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Serialization;
 
 public class GameManager : MonoBehaviour
 {
@@ -33,7 +34,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Cursor and Towers")]
     [SerializeField] private CustomCursor customCursor; // Cursor customizado usado para mostrar onde a torre ser� colocada
-    [SerializeField] private Turret TowerToPlace; // Refer�ncia � torre que est� prestes a ser colocada
+    [FormerlySerializedAs("TowerToPlace")] [SerializeField] private Turret towerToPlace; // Refer�ncia � torre que est� prestes a ser colocada
 
     [Header("Tiles and Path")]
     private Tile selectedTile; // Adicione isso fora de qualquer m�todo
@@ -143,7 +144,7 @@ public class GameManager : MonoBehaviour
     // Lida com a coloca��o de uma torre no tile mais pr�ximo ao clique do jogador.
     private void HandleTowerPlacement()
     {
-        if (Input.GetMouseButtonDown(0) && TowerToPlace != null)
+        if (Input.GetMouseButtonDown(0) && towerToPlace != null)
         {
             Tile nearestTile = FindNearestTile();
 
@@ -152,16 +153,16 @@ public class GameManager : MonoBehaviour
                 PlaceTower(nearestTile);
             }
         }
-        else if (TowerToPlace != null)
+        else if (towerToPlace != null)
         {
-            TowerToPlace.SetGizmoVisibility(true);
+            towerToPlace.SetGizmoVisibility(true);
         }
     }
 
 
     private void HandleTowerCancellation()
     {
-        if (Input.GetMouseButtonDown(1) && TowerToPlace != null)
+        if (Input.GetMouseButtonDown(1) && towerToPlace != null)
         {
             CancelTowerPlacement();
         }
@@ -204,7 +205,7 @@ public class GameManager : MonoBehaviour
 
     private void CancelTowerPlacement()
     {
-        TowerToPlace = null; // Reseta a torre a ser colocada
+        towerToPlace = null; // Reseta a torre a ser colocada
         customCursor.gameObject.SetActive(false); // Esconde o cursor customizado
         Cursor.visible = true; // Torna o cursor padr�o vis�vel novamente
         Debug.Log("Tower placement canceled.");
@@ -233,9 +234,9 @@ public class GameManager : MonoBehaviour
     // Coloca uma torre no tile especificado.
     private void PlaceTower(Tile tile)
     {
-        if (GameState.Instance.SpendCoins(TowerToPlace.cost)) // Verifica e deduz as moedas
+        if (GameState.Instance.SpendCoins(towerToPlace.cost)) // Verifica e deduz as moedas
         {
-            Turret newTower = Instantiate(TowerToPlace, tile.transform.position, Quaternion.identity);
+            Turret newTower = Instantiate(towerToPlace, tile.transform.position, Quaternion.identity);
             tile.tower = newTower; // Vincula a torre ao Tile
             tile.isOcupied = true; // Marca o tile como ocupado
             placedTowers.Add(newTower); // Adiciona a nova torre � lista de torres colocadas
@@ -243,7 +244,7 @@ public class GameManager : MonoBehaviour
             // Desativa o gizmo da torre ap�s coloc�-la
             newTower.SetGizmoVisibility(false);
 
-            TowerToPlace = null; // Reseta a torre a ser colocada
+            towerToPlace = null; // Reseta a torre a ser colocada
             customCursor.gameObject.SetActive(false); // Esconde o cursor customizado
             Cursor.visible = true; // Torna o cursor padr�o vis�vel novamente
         }
@@ -253,7 +254,7 @@ public class GameManager : MonoBehaviour
             // Reseta o cursor se n�o houver moedas suficientes
             customCursor.gameObject.SetActive(false);
             Cursor.visible = true;
-            TowerToPlace = null;
+            towerToPlace = null;
         }
     }
 
@@ -290,7 +291,7 @@ public class GameManager : MonoBehaviour
         customCursor.gameObject.SetActive(true);
         customCursor.GetComponent<SpriteRenderer>().sprite = tower.GetComponent<SpriteRenderer>().sprite;
         Cursor.visible = false;
-        TowerToPlace = tower;
+        towerToPlace = tower;
         grid.SetActive(true); // Mostra a grade de coloca��o
     }
 
