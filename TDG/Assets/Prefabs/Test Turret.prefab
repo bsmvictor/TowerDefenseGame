@@ -302,7 +302,7 @@ MonoBehaviour:
   firingPoint: {fileID: 3980522559614772423}
   rangeIndicator: {fileID: 8326861886176395078}
   range: 1.5
-  rotationSpeed: 280
+  rotationSpeed: 300
   fireRate: 2
   damage: 1
   cost: 150

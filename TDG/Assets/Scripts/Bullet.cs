@@ -23,38 +23,40 @@ public class Bullet : MonoBehaviour
         turret = _turret;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        // Se o alvo for destruído ou não existir, destrói a bala
-        if (!target)
+        if (target == null)
         {
-            Destroy(gameObject);
+            Destroy(gameObject); // Destrói a bala se o alvo for perdido
             return;
         }
 
-        // Move a bala diretamente em direção ao alvo, sem usar física
+        // Calcula a direção para o alvo
         Vector2 direction = (target.position - transform.position).normalized;
-        float distanceThisFrame = bulletSpeed * Time.deltaTime;
 
-        // Verifica se a bala atingiu o alvo
+        // Move a bala em direção ao alvo
+        float distanceThisFrame = bulletSpeed * Time.deltaTime;
         if (Vector2.Distance(transform.position, target.position) <= distanceThisFrame)
         {
             HitTarget();
-            return;
         }
-
-        // Move a bala
-        transform.Translate(direction * distanceThisFrame, Space.World);
+        else
+        {
+            rb.velocity = direction * bulletSpeed;
+        }
     }
 
     private void HitTarget()
     {
+        // Lida com o dano ao atingir o alvo
         Health health = target.GetComponent<Health>();
         if (health != null)
         {
-            health.TakeDamage(turret.damage); // Usa o dano da torre
+            health.TakeDamage(turret.damage);
         }
-        Destroy(gameObject); // Destrói a bala após atingir o alvo
+
+        // Destrói a bala
+        Destroy(gameObject);
     }
 
     private void OnBecameInvisible()

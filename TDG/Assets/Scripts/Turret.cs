@@ -59,28 +59,58 @@ public class Turret : MonoBehaviour
 
     protected virtual void Update()
     {
-        // Se não há alvo, procura por um novo alvo
-        if (target == null)
+        // Se não há alvo ou o alvo não está mais dentro do alcance, procura por um novo alvo
+        if (target == null || !CheckTargetInRange())
         {
             FindTarget();
-            return;
         }
 
-        // Gira a torre em direção ao alvo
-        if (turretRotationPoint != null)
+        // Verifica se o ponto de rotação está atribuído antes de tentar rodar a torre
+        if (turretRotationPoint != null && target != null)
         {
-            RotateTowardsTarget();
+            RotateTowardsTarget(); // Gira a torre em direção ao alvo
         }
 
-        // Verifica se o alvo ainda está no alcance
-        if (!CheckTargetInRange())
+        // Dispara se o tempo de recarga terminou e existe um alvo
+        if (target != null)
         {
-            target = null;
+            timeUntilFire += Time.deltaTime;
+            if (timeUntilFire >= 1f / fireRate)
+            {
+                Shoot();
+                timeUntilFire = 0f;
+            }
         }
-        else
+    }
+
+    // Método para encontrar o alvo mais próximo do objetivo (ou o mais avançado no caminho)
+    protected virtual void FindTarget()
+    {
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, range, enemyMask);
+
+        if (hits.Length > 0)
         {
-            // Dispara imediatamente quando possível
-            ShootAtTarget();
+            // Prioriza o inimigo mais avançado no caminho
+            Transform bestTarget = null;
+            float shortestDistance = Mathf.Infinity;
+            foreach (Collider2D hit in hits)
+            {
+                EnemyMovement enemy = hit.GetComponent<EnemyMovement>();
+                if (enemy != null)
+                {
+                    float distanceToEnd = Vector2.Distance(enemy.transform.position, GameManager.main.endPoint.position);
+                    if (distanceToEnd < shortestDistance)
+                    {
+                        shortestDistance = distanceToEnd;
+                        bestTarget = enemy.transform;
+                    }
+                }
+            }
+
+            if (bestTarget != null)
+            {
+                target = bestTarget;
+            }
         }
     }
 
@@ -122,30 +152,6 @@ public class Turret : MonoBehaviour
         bulletScript.SetTurret(this); // Define a torre que disparou o projétil
     }
 
-    // Método para encontrar o alvo mais próximo dentro do alcance
-    protected virtual void FindTarget()
-    {
-        Collider2D[] enemiesInRange = Physics2D.OverlapCircleAll(transform.position, range, enemyMask);
-
-        float shortestDistance = Mathf.Infinity;
-        Transform nearestEnemy = null;
-
-        foreach (Collider2D enemy in enemiesInRange)
-        {
-            float distanceToEnemy = Vector2.Distance(transform.position, enemy.transform.position);
-
-            if (distanceToEnemy < shortestDistance)
-            {
-                shortestDistance = distanceToEnemy;
-                nearestEnemy = enemy.transform;
-            }
-        }
-
-        if (nearestEnemy != null && shortestDistance <= range)
-        {
-            target = nearestEnemy;
-        }
-    }
 
     // Verifica se o alvo ainda está dentro do alcance da torre
     protected virtual bool CheckTargetInRange()

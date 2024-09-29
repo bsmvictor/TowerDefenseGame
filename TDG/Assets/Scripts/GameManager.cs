@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.Serialization;
 
 public class GameManager : MonoBehaviour
 {
@@ -34,12 +33,13 @@ public class GameManager : MonoBehaviour
 
     [Header("Cursor and Towers")]
     [SerializeField] private CustomCursor customCursor; // Cursor customizado usado para mostrar onde a torre ser� colocada
-    [FormerlySerializedAs("TowerToPlace")] [SerializeField] private Turret towerToPlace; // Refer�ncia � torre que est� prestes a ser colocada
+    [SerializeField] private Turret TowerToPlace; // Refer�ncia � torre que est� prestes a ser colocada
 
     [Header("Tiles and Path")]
     private Tile selectedTile; // Adicione isso fora de qualquer m�todo
     public Tile[] tiles; // Array de tiles onde as torres podem ser colocadas
     public Transform startPoint; // Ponto inicial para os inimigos
+    public Transform endPoint; // Ponto final para os inimigos
     public Transform[] path; // Caminho que os inimigos seguem
 
     // Lista para armazenar as torres colocadas no mapa
@@ -56,14 +56,16 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        // Reinicializa o estado do jogo com moedas, vida e ondas
-        GameState.Instance.ResetGameState();  // Garante que o estado esteja resetado ao começar
+        // Inicializa o estado do jogo com moedas e vida
+        GameState.Instance.ResetCoins(300);
+        GameState.Instance.ResetHealth(10);
+        GameState.Instance.ResetWave();
+        GameState.Instance.GameSpeed = 1f; // Define a velocidade do jogo para 1x
 
         sellTowerButton.onClick.AddListener(() => SellSelectedTower());
         upgradeRangeButton.onClick.AddListener(() => UpgradeSelectedTowerRange());
         upgradeSpeedButton.onClick.AddListener(() => UpgradeSelectedTowerSpeed());
     }
-
 
 
     private void Update()
@@ -143,7 +145,7 @@ public class GameManager : MonoBehaviour
     // Lida com a coloca��o de uma torre no tile mais pr�ximo ao clique do jogador.
     private void HandleTowerPlacement()
     {
-        if (Input.GetMouseButtonDown(0) && towerToPlace != null)
+        if (Input.GetMouseButtonDown(0) && TowerToPlace != null)
         {
             Tile nearestTile = FindNearestTile();
 
@@ -152,16 +154,16 @@ public class GameManager : MonoBehaviour
                 PlaceTower(nearestTile);
             }
         }
-        else if (towerToPlace != null)
+        else if (TowerToPlace != null)
         {
-            towerToPlace.SetGizmoVisibility(true);
+            TowerToPlace.SetGizmoVisibility(true);
         }
     }
 
 
     private void HandleTowerCancellation()
     {
-        if (Input.GetMouseButtonDown(1) && towerToPlace != null)
+        if (Input.GetMouseButtonDown(1) && TowerToPlace != null)
         {
             CancelTowerPlacement();
         }
@@ -204,7 +206,7 @@ public class GameManager : MonoBehaviour
 
     private void CancelTowerPlacement()
     {
-        towerToPlace = null; // Reseta a torre a ser colocada
+        TowerToPlace = null; // Reseta a torre a ser colocada
         customCursor.gameObject.SetActive(false); // Esconde o cursor customizado
         Cursor.visible = true; // Torna o cursor padr�o vis�vel novamente
         Debug.Log("Tower placement canceled.");
@@ -233,9 +235,9 @@ public class GameManager : MonoBehaviour
     // Coloca uma torre no tile especificado.
     private void PlaceTower(Tile tile)
     {
-        if (GameState.Instance.SpendCoins(towerToPlace.cost)) // Verifica e deduz as moedas
+        if (GameState.Instance.SpendCoins(TowerToPlace.cost)) // Verifica e deduz as moedas
         {
-            Turret newTower = Instantiate(towerToPlace, tile.transform.position, Quaternion.identity);
+            Turret newTower = Instantiate(TowerToPlace, tile.transform.position, Quaternion.identity);
             tile.tower = newTower; // Vincula a torre ao Tile
             tile.isOcupied = true; // Marca o tile como ocupado
             placedTowers.Add(newTower); // Adiciona a nova torre � lista de torres colocadas
@@ -243,7 +245,7 @@ public class GameManager : MonoBehaviour
             // Desativa o gizmo da torre ap�s coloc�-la
             newTower.SetGizmoVisibility(false);
 
-            towerToPlace = null; // Reseta a torre a ser colocada
+            TowerToPlace = null; // Reseta a torre a ser colocada
             customCursor.gameObject.SetActive(false); // Esconde o cursor customizado
             Cursor.visible = true; // Torna o cursor padr�o vis�vel novamente
         }
@@ -253,7 +255,7 @@ public class GameManager : MonoBehaviour
             // Reseta o cursor se n�o houver moedas suficientes
             customCursor.gameObject.SetActive(false);
             Cursor.visible = true;
-            towerToPlace = null;
+            TowerToPlace = null;
         }
     }
 
@@ -290,7 +292,7 @@ public class GameManager : MonoBehaviour
         customCursor.gameObject.SetActive(true);
         customCursor.GetComponent<SpriteRenderer>().sprite = tower.GetComponent<SpriteRenderer>().sprite;
         Cursor.visible = false;
-        towerToPlace = tower;
+        TowerToPlace = tower;
         grid.SetActive(true); // Mostra a grade de coloca��o
     }
 
@@ -324,47 +326,32 @@ public class GameManager : MonoBehaviour
 
     private void UpdateButtonColors()
     {
-// Verificação de nulidade para o botão de venda da torre
-        if (sellTowerButton != null && sellTowerButton.image != null)
+        if (selectedTile != null && selectedTile.isOcupied)
         {
-            if (selectedTile != null && selectedTile.isOcupied)
-            {
-                sellTowerButton.image.color = sellTowerButtonActiveColor;
-            }
-            else
-            {
-                sellTowerButton.image.color = sellTowerButtonInactiveColor;
-            }
+            sellTowerButton.image.color = sellTowerButtonActiveColor;
+        }
+        else
+        {
+            sellTowerButton.image.color = sellTowerButtonInactiveColor;
         }
 
-
-// Verificação de nulidade para o botão de upgrade de alcance
-        if (upgradeRangeButton != null && upgradeRangeButton.image != null)
+        if (selectedTile != null && selectedTile.isOcupied)
         {
-            if (selectedTile != null && selectedTile.isOcupied)
-            {
-                upgradeRangeButton.image.color = upgradeRangeButtonActiveColor;
-            }
-            else
-            {
-                upgradeRangeButton.image.color = upgradeRangeButtonInactiveColor;
-            }
+            upgradeRangeButton.image.color = upgradeRangeButtonActiveColor;
+        }
+        else
+        {
+            upgradeRangeButton.image.color = upgradeRangeButtonInactiveColor;
         }
 
-
-// Verificação de nulidade para o botão de upgrade de velocidade
-        if (upgradeSpeedButton != null && upgradeSpeedButton.image != null)
+        if (selectedTile != null && selectedTile.isOcupied)
         {
-            if (selectedTile != null && selectedTile.isOcupied)
-            {
-                upgradeSpeedButton.image.color = upgradeSpeedButtonActiveColor;
-            }
-            else
-            {
-                upgradeSpeedButton.image.color = upgradeSpeedButtonInactiveColor;
-            }
+            upgradeSpeedButton.image.color = upgradeSpeedButtonActiveColor;
         }
-
+        else
+        {
+            upgradeSpeedButton.image.color = upgradeSpeedButtonInactiveColor;
+        }
     }
 
 }

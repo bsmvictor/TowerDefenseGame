@@ -277,7 +277,7 @@ MonoBehaviour:
   totalCost: 0
   rangeUpgradeMultiplier: 0.5
   speedUpgradeMultiplier: 0.5
-  fireDelay: 2
+  fireDelay: 5
   fireTimer: 0
 --- !u!1 &6149245416626125342
 GameObject:
